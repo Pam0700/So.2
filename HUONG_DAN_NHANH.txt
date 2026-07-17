@@ -1,0 +1,21 @@
+HƯỚNG DẪN NHANH – QC GENERATOR V7
+
+1. Giải nén file ZIP.
+2. Mở index.html bằng Chrome, Edge hoặc Safari.
+3. Chọn file DG.
+4. Chọn các file 50 / 54 / 58.
+5. Chọn mã Ship.
+6. Nhấn TẠO BÁO CÁO QC.
+7. Tải hoặc chia sẻ file Excel.
+
+Mẫu QC đã được tích hợp sẵn.
+
+ĐỂ KIỂM TRA FORM TỰ THÊM:
+Mở sample_output/QC_demo_5_forms_CHU_KY_DAY_DU.xlsx.
+Form 3, 4, 5 đều có đầy đủ:
+- Người báo cáo (QC) / Reported by
+- Kho & vận chuyển / Inspected by
+- Người kiểm tra / Approved by
+- Quản Đắc Tân
+
+Ứng dụng hoạt động offline và không tải dữ liệu lên máy chủ.

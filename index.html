@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#1859d8" />
+  <meta name="description" content="Ghép DG và file sản phẩm để xuất biểu mẫu QC theo mẫu BM-QC-26." />
+  <title>Tạo báo cáo QC xuất hàng</title>
+  <link rel="stylesheet" href="styles.css?v=7.0.0" />
+</head>
+<body>
+  <main class="app-shell">
+    <header class="hero">
+      <div>
+        <p class="eyebrow">PHIÊN BẢN 7.0 · CHẠY TRỰC TIẾP TRÊN TRÌNH DUYỆT</p>
+        <h1>Tạo báo cáo QC xuất hàng</h1>
+        <p class="subtitle">
+          Ghép file DG với các file sản phẩm rồi điền vào mẫu <b>BM-QC-26</b>.
+          Form mới được nhân bản nguyên khối, bao gồm cả <b>Người báo cáo</b>,
+          <b>Kho &amp; vận chuyển</b> và phần người kiểm tra.
+        </p>
+      </div>
+      <span class="status-pill">Dữ liệu không tải lên máy chủ</span>
+    </header>
+
+    <section class="metrics" aria-label="Tóm tắt dữ liệu">
+      <article class="metric-card"><span>Mã Ship</span><strong id="shipMetric">0</strong></article>
+      <article class="metric-card"><span>Dòng DG</span><strong id="dgMetric">0</strong></article>
+      <article class="metric-card"><span>Dòng sản phẩm</span><strong id="productMetric">0</strong></article>
+      <article class="metric-card"><span>Nhóm khách hàng</span><strong id="groupMetric">0</strong></article>
+      <article class="metric-card"><span>Số form</span><strong id="pageMetric">0</strong></article>
+      <article class="metric-card"><span>Cảnh báo</span><strong id="warningMetric">0</strong></article>
+    </section>
+
+    <section class="upload-grid">
+      <article class="panel">
+        <div class="section-heading">
+          <span class="step-number">1</span>
+          <div>
+            <h2>Tải file DG</h2>
+            <p>Các cột cần có: Code · Tên khách hàng · Điểm giao hàng · Ship.</p>
+          </div>
+        </div>
+        <label class="file-drop" for="dgFiles">
+          <input id="dgFiles" type="file" multiple accept=".xlsx,.xls,.xlsm,.csv" />
+          <span class="file-main">Chọn file DG</span>
+          <span class="file-help">Có thể chọn một hoặc nhiều file.</span>
+        </label>
+        <div id="dgStatus" class="file-status">Chưa tải file DG.</div>
+      </article>
+
+      <article class="panel">
+        <div class="section-heading">
+          <span class="step-number">2</span>
+          <div>
+            <h2>Tải file sản phẩm</h2>
+            <p>Mỗi file cần có hai cột Code và Sản phẩm.</p>
+          </div>
+        </div>
+        <label class="file-drop" for="productFiles">
+          <input id="productFiles" type="file" multiple accept=".xlsx,.xls,.xlsm,.csv" />
+          <span class="file-main">Chọn file 50 / 54 / 58</span>
+          <span class="file-help">Có thể chọn đồng thời nhiều file.</span>
+        </label>
+        <div id="productStatus" class="file-status">Chưa tải file sản phẩm.</div>
+      </article>
+    </section>
+
+    <section class="panel">
+      <div class="section-heading">
+        <span class="step-number">3</span>
+        <div>
+          <h2>Mẫu QC</h2>
+          <p>Ứng dụng đã tích hợp file mẫu gốc. Chỉ tải mẫu khác khi cần thay thế.</p>
+        </div>
+      </div>
+      <div class="template-grid">
+        <label class="file-drop compact-drop" for="templateFile">
+          <input id="templateFile" type="file" accept=".xlsx" />
+          <span class="file-main">Tải mẫu QC khác</span>
+          <span class="file-help">Sheet phải có tên “Xe to”.</span>
+        </label>
+        <div>
+          <div id="templateStatus" class="file-status">Đang dùng mẫu QC tích hợp.</div>
+          <p id="layoutInfo" class="layout-info">Đang kiểm tra cấu trúc mẫu…</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel controls-panel">
+      <div class="section-heading">
+        <span class="step-number">4</span>
+        <div>
+          <h2>Chọn Ship và tạo báo cáo</h2>
+          <p>Cùng tên khách nhưng khác điểm giao được tách thành nhóm riêng.</p>
+        </div>
+      </div>
+
+      <div class="control-grid">
+        <label class="field">
+          <span>Mã Ship cần xử lý</span>
+          <select id="shipSelect" disabled><option value="">Tải file DG trước</option></select>
+        </label>
+
+        <label class="switch-card">
+          <input id="processAll" type="checkbox" />
+          <span><b>Xử lý tất cả Ship</b><small>Không lọc theo mã Ship.</small></span>
+        </label>
+      </div>
+
+      <div class="option-grid">
+        <label class="check-card"><input id="removeDuplicates" type="checkbox" checked /><span>Loại bỏ sản phẩm trùng trong cùng khách hàng – điểm giao</span></label>
+        <label class="check-card"><input id="removeVietgap" type="checkbox" checked /><span>Xóa chữ VietGap khỏi tên sản phẩm</span></label>
+      </div>
+
+      <div class="logic-note">
+        <b>Quy tắc xếp form:</b> giữ nguyên một khách hàng nếu có tối đa 25 sản phẩm;
+        chỉ tách khi có trên 25 sản phẩm. Thứ tự sản phẩm: 5kg → 2kg → 1kg → TF → 500g → loại khác.
+      </div>
+
+      <div class="button-grid">
+        <button id="loadDemoButton" class="secondary-button" type="button">Nạp dữ liệu demo</button>
+        <button id="processButton" class="primary-button" type="button" disabled>Tạo báo cáo QC</button>
+      </div>
+      <div id="message" class="message" aria-live="polite"></div>
+    </section>
+
+    <section id="resultSection" class="panel hidden">
+      <div class="result-header">
+        <div>
+          <p class="eyebrow">KẾT QUẢ</p>
+          <h2>Phân bố dữ liệu vào các form</h2>
+        </div>
+        <span class="order-badge">Tối đa 25 dòng / form lặp</span>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Khách hàng</th>
+              <th>Điểm giao</th>
+              <th>Số sản phẩm</th>
+              <th>Xem nhanh</th>
+            </tr>
+          </thead>
+          <tbody id="resultBody"></tbody>
+        </table>
+      </div>
+
+      <details class="warnings-panel">
+        <summary>Cảnh báo xử lý</summary>
+        <ul id="warningList"></ul>
+      </details>
+
+      <div class="result-actions">
+        <button id="shareButton" class="primary-button" type="button">Lưu / Chia sẻ Excel</button>
+        <button id="downloadButton" class="secondary-button" type="button">Tải Excel trực tiếp</button>
+      </div>
+    </section>
+
+    <section class="help-panel">
+      <h2>Dùng trên GitHub Pages</h2>
+      <ol>
+        <li>Giải nén ZIP.</li>
+        <li>Tải toàn bộ thư mục lên repository GitHub.</li>
+        <li>Vào Settings → Pages → Deploy from a branch.</li>
+        <li>Chọn nhánh main và thư mục /(root), sau đó Save.</li>
+      </ol>
+      <p>Ứng dụng có thể mở trực tiếp bằng <b>index.html</b> và không cần Internet.</p>
+    </section>
+
+    <footer>V7.0 · Mẫu QC tích hợp · Nhân bản cả dòng, merge, page break và textbox chữ ký</footer>
+  </main>
+
+  <script src="libs/xlsx.full.min.js?v=0.18.5"></script>
+  <script src="libs/jszip.min.js?v=3.10.1"></script>
+  <script src="template-base64.js?v=7.0.0"></script>
+  <script src="app.js?v=7.0.0"></script>
+</body>
+</html>
