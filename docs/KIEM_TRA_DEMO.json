@@ -1,0 +1,23 @@
+{
+  "version": "7.0.0",
+  "template": "BM-QC-26.xlsx",
+  "sheet": "Xe to",
+  "demo_output": "sample_output/QC_demo_5_forms_CHU_KY_DAY_DU.xlsx",
+  "forms": 5,
+  "form_3": {
+    "rows": "73:108",
+    "customer_cell": "J79",
+    "delivery_cell": "J80",
+    "product_range": "K79:K103",
+    "reported_by_textbox_anchor_row_zero_based": 105,
+    "inspected_by_textbox_anchor_row_zero_based": 105,
+    "approved_by_cell": "S106",
+    "approver_name_range": "S108:V108"
+  },
+  "verified": {
+    "xlsx_zip_integrity": true,
+    "sheet_dimension": "A2:X180",
+    "drawing_textboxes_cloned_for_forms_3_to_5": true,
+    "manual_page_breaks": [36, 72, 108, 144]
+  }
+}
